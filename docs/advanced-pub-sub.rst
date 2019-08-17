@@ -3,14 +3,16 @@ Advanced example of using both messageing patterns in a streaming application
 =============================================================================
 
 So far all examples were implying that we receive images on a regular computer
-(with a monitor) so we can use functions like cv2.imshow() to immediately see
-a result (to see the received streem).
+(with a monitor) so we can use functions like ``cv2.imshow()`` to immediately see
+a result (the received stream).
 
-However, this is not always an option. Consider following scenario: multiple cameras
-send images to a server, which is processing them (for example, performs motion
-detection, objects analisys etc). The server is headless (ideally, on a remote 
-facility). So you need a tool to check streams occasionaly. Lets see how we could
-implement this.
+However, this is not always an option. Consider the following scenario: multiple cameras send images to a headless server (computer that does not have a monitor and could be located somewhere in datacenter).
+
+We want to be able to connect somehow to this server remotely (ideally using web browser) and check our video streams.
+
+So we want to connect/disconnect to our video streams occasionaly and this should not affect processing of those streams (motion or object detection, recording etc).
+
+Lets see how this can be implemented.
 
 Raspberry code
 ==============
