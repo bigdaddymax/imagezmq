@@ -24,13 +24,13 @@ by the Mac message is an "OK" that tells the Raspberry Pi that it can send
 another image.
 
 ZMQ is a powerful messaging library that allows many patterns for sending and
-receiving messages. **imagezmq** provides access to  REQ/REP and PUB/SUP ZMQ 
+receiving messages. **imagezmq** provides access to  **REQ/REP** and **PUB/SUP** ZMQ 
 messaging patterns. 
 
 REQ/REP messaging pattern
 =========================
 
-When using REQ/REP pattern every time a Raspberry Pi sends an image, it waits for an "OK"
+When using REQ/REP (request/reply) pattern every time a Raspberry Pi sends an image, it waits for an "OK"
 from the Mac before sending another image. It also means that there can be multiple
 Raspberry Pi computers sending messages to the Mac at the same time, since
 the ZMQ REQ/REP pattern allows many clients to send REQ messages to a single
