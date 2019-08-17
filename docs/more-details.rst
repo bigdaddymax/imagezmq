@@ -170,8 +170,8 @@ Server code
 
 The reciever part is very similar to **REQ/REP** example, however there are defferences:
 
- * Line 7: We have to know IP address of the sender to connect to it. In REQ/REP case the direction of connection was opposite - the sender had to know address of the recipient. Also, we use *REQ_REP=False* parameter here.
- * Line 12: There is no one as we don't have to send reply to sender :)
+* Line 7: We have to know IP address of the sender to connect to it. In REQ/REP case the direction of connection was opposite - the sender had to know address of the recipient. Also, we use *REQ_REP=False* parameter here.
+* Line 12: There is no one as we don't have to send reply to sender :)
 
 
 `Return to main documentation page README.rst <../README.rst>`_
