@@ -70,4 +70,30 @@ Also, almost nothing new here:
         processImage(image)
         stream_monitor.send_image(rpi_name, image)
 
+HTTP server code
+================
+
+This code handles HTTP requests and can serve video stream from the headless server to your browser.
+
+.. code-block:: python
+    :number-lines:
+    
+    import cv2
+    import imagezmq
+    from werkzeug.wrappers import Request, Response
+    from werkzeug.serving import run_simple
+    
+    def sendImagesToWeb():
+        receiver = imagezmq.ImageHub(open_port='tcp://localhost:5556', REQ_REP = False)
+        while True:
+            camName, frame = receiver.recv_image()
+            jpg = cv2.imencode('.jpg', frame)[1]
+            yeild b'--frame\r\nContent-Type:image/jpeg\r\n\r\n'+jpg.tostring()+b'\r\n'
+   
+    @Request.application
+    def application(request):
+        return Response(sendImagesToWeb(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+    if __name__ == '__main__':
+        run_simple('192.168.0.114', 4000, application)
 
