@@ -43,7 +43,7 @@ of reading images from the PI camera and sending them to the server.
 Server code (receiving images from the cameras)
 ==============================================
 
-Also, almost nothing new here:
+This code is pretty similar to `test_1_receive_images.py`:
 
 .. code-block:: python
     :number-lines:
@@ -70,6 +70,8 @@ Also, almost nothing new here:
         processImage(image)
         stream_monitor.send_image(rpi_name, image)
 
+Additional things in this script are lines 13 and 22.  
+
 HTTP server code
 ================
 
@@ -84,7 +86,7 @@ This code handles HTTP requests and can serve video stream from the headless ser
     from werkzeug.serving import run_simple
     
     def sendImagesToWeb():
-        receiver = imagezmq.ImageHub(open_port='tcp://localhost:5556', REQ_REP = False)
+        receiver = imagezmq.ImageHub(open_port='tcp://localhost:5566', REQ_REP = False)
         while True:
             camName, frame = receiver.recv_image()
             jpg = cv2.imencode('.jpg', frame)[1]
@@ -97,3 +99,4 @@ This code handles HTTP requests and can serve video stream from the headless ser
     if __name__ == '__main__':
         run_simple('192.168.0.114', 4000, application)
 
+This code requires more explanations. 
