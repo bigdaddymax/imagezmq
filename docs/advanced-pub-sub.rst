@@ -72,7 +72,7 @@ This code is pretty similar to `test_1_receive_images.py`:
 
 Additional things in this script are lines 14 and 21.
 
-Line 14 - here we create an ImageSender object in PUB/SUB mode (more about this you can read here_) This object will be used to publish images after they are processed for monitoring (this is done in Line 21).
+Line 14 - here we create an `ImageSender` object in **PUB/SUB** mode (more about this you can read here_) This object will be used to publish images after they are processed for monitoring (this is done in Line 21).
 
 .. _here: api-examples.rst#two-messaging-patterns-reqrep-and-pubsub
 
@@ -80,6 +80,10 @@ HTTP server code
 ================
 
 This code handles HTTP requests and can serve video stream from the headless server to your browser.
+
+We use a simple Python library that can handle incoming HTTP connetions to create a very simple HTTP server. Whenever there is an incoming request from the browser we start pulling images from the queue, encode them into a JPEG format and return to the browser as part of `multipart` data.
+
+As a result, we will receive a stream of frames that will assemble into a live video in a browser.
 
 .. code-block:: python
     :number-lines:
@@ -90,17 +94,25 @@ This code handles HTTP requests and can serve video stream from the headless ser
     from werkzeug.serving import run_simple
     
     def sendImagesToWeb():
+        # When we have incoming request, create a receiver and subscribe to a publisher
         receiver = imagezmq.ImageHub(open_port='tcp://localhost:5566', REQ_REP = False)
         while True:
+            # Pull an image from the queue
             camName, frame = receiver.recv_image()
+            # Using OpenCV library create a JPEG image from the frame we have received 
             jpg = cv2.imencode('.jpg', frame)[1]
+            # Convert this JPEG image into a binary string that we can send to the browser via HTTP
             yeild b'--frame\r\nContent-Type:image/jpeg\r\n\r\n'+jpg.tostring()+b'\r\n'
    
+    # Add `application` method to Request class and define this method here
     @Request.application
     def application(request):
+        # What we do is we `sendImagesToWeb` as Iterator (generator) and create a Response object
+        # based on its output.
         return Response(sendImagesToWeb(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
     if __name__ == '__main__':
+        # This code starts simple HTTP server that listens on interface with IP 192.168.0.114, port 4000
         run_simple('192.168.0.114', 4000, application)
 
-This code requires more explanations. 
+
